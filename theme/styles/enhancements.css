@@ -1,0 +1,120 @@
+/* Aesthetic layer on top of the base theme: gradient headings, glass
+   panels for comparison columns, and small motion/typography polish. */
+
+/* Mermaid renders once and bakes colors into its own <style> tag inside a
+   shadow root, so it can't react to light/dark mode on its own. These
+   custom properties DO pierce the shadow boundary (inheritance still
+   applies), so setup/mermaid.ts's themeCSS references them for the one
+   piece that genuinely needs to differ per mode: the cluster/group panel,
+   which is opaque in light mode but must not become a bright slab against
+   the dark ambient background. */
+:root {
+  --diagram-cluster-bg: #eef8f9;
+  --diagram-cluster-text: #0b1120;
+}
+
+html.dark {
+  --diagram-cluster-bg: color-mix(in srgb, var(--brand-blue) 12%, transparent);
+  --diagram-cluster-text: #eafdff;
+}
+
+/* Slide content should sit above the animated ambient background. */
+.slidev-layout {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cover / section / statement / fact headings sit on top of the animated,
+   brand-colored ambient blobs, so a same-hue gradient fill would wash out
+   against them. Keep the heading in the theme's adaptive light/dark text
+   color (guaranteed contrast in both modes) and use a soft brand-blue glow
+   for depth instead of color for pop. */
+.slidev-layout.cover h1,
+.slidev-layout.intro h1,
+.slidev-layout.section h1,
+.slidev-layout.statement h1,
+.slidev-layout.fact h1 {
+  text-shadow: 0 0 40px color-mix(in srgb, var(--brand-blue) 35%, transparent);
+}
+
+.slidev-layout.cover h2,
+.slidev-layout.intro h2 {
+  @apply opacity-80 font-400;
+}
+
+/* Two-column comparisons (used heavily for the "solved / plagued by" and
+   "pros / cons" slides) get a soft glass card so each side reads as a
+   distinct, weighted block instead of loose text. */
+.two-cols-header .col-left,
+.two-cols-header .col-right {
+  @apply relative rounded-xl px-5 py-4 mt-2;
+  background: color-mix(in srgb, var(--slidev-theme-primary, #04d5e7) 6%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.two-cols-header .col-header {
+  @apply pb-2;
+}
+
+.two-cols-header {
+  column-gap: 1.5rem;
+}
+
+.two-cols-header h4 {
+  @apply -mt-1 mb-2 opacity-70 tracking-wide;
+}
+
+/* Give clicked-in list items a touch of motion instead of a flat fade,
+   so builds feel alive without becoming a distraction. */
+.slidev-vclick-target {
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+}
+
+.slidev-vclick-hidden {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* Code blocks and diagrams read as elevated cards floating above the
+   ambient background. */
+.slidev-layout pre.shiki,
+.slidev-layout .mermaid,
+.slidev-layout .slidev-code {
+  @apply rounded-lg shadow-lg;
+  box-shadow: 0 12px 32px -16px color-mix(in srgb, var(--brand-blue) 35%, transparent);
+}
+
+.slidev-layout img:not(.no-card) {
+  @apply rounded-lg;
+}
+
+/* Subtle glow behind the brand stripe accent used on non-cover layouts. */
+.slidev-layout:not(.cover)::before {
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--brand-blue) 40%, transparent));
+}
+
+/* A large decorative quotation mark anchors the quote layout without
+   competing with the text itself. */
+.slidev-layout.quote {
+  @apply px-16;
+}
+
+.slidev-layout.quote::after {
+  content: '\201C';
+  position: absolute;
+  top: -2rem;
+  left: 2rem;
+  font-family: var(--font-heading);
+  font-size: 10rem;
+  line-height: 1;
+  color: var(--brand-blue);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.slidev-layout.about-me img {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--brand-blue) 30%, transparent);
+}

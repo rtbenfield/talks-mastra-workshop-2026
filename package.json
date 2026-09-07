@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@slidev/cli": "^52.19.1",
-    "@slidev/theme-default": "latest",
-    "@slidev/theme-seriph": "latest",
+    "codemirror-theme-vars": "^0.1.2",
+    "prism-theme-vars": "^0.2.5",
     "vue": "^3.5.33"
   }
 }
