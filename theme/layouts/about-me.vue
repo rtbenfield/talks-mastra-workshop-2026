@@ -5,8 +5,9 @@
 
       <h3 class="flex items-center gap-2">
         Platform Architect @
-        <img alt="Prisma" class="h-5 dark:hidden" src="/prisma-light.svg" />
-        <img alt="Prisma" class="h-5 hidden dark:block" src="/prisma-dark.svg" />
+        <svg aria-label="Prisma" class="h-5 w-auto text-[#090A15] dark:text-white" viewBox="0 0 264 67">
+          <use href="/prisma.svg#prisma-logo" />
+        </svg>
       </h3>
 
       <span> <carbon:logo-x /> rtbenfield </span>

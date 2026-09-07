@@ -1,662 +1,411 @@
 ---
-# Use the migrated local theme.
 theme: ./theme
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: https://cover.sli.dev
-# some information about your slides (markdown enabled)
-title: Welcome to Slidev
+title: "Sherlog: Sub-agents and open-weight models in production"
 info: |
-  ## Slidev Starter Template
-  Presentation slides for developers.
-
-  Learn more at [Sli.dev](https://sli.dev)
-# apply UnoCSS classes to the current slide
-class: text-center
-# https://sli.dev/features/drawing
-drawings:
-  persist: false
-# slide transition: https://sli.dev/guide/animations.html#slide-transitions
+  A workshop about building Sherlog with Mastra.
+  Sub-agents protect context. Open-weight models make the system practical to operate.
+class: text-left
 transition: slide-left
-# enable Comark Syntax: https://comark.dev/syntax/markdown
+duration: 30min
 comark: true
-# duration of the presentation
-duration: 35min
+
+layout: cover
+# background: ./theme/public/texture.jpg
 ---
 
-# Welcome to Slidev
+# Sherlog
 
-Presentation slides for developers
+## Sub-agents and open-weight models on the frontlines
 
-<div @click="$slidev.nav.next" class="mt-12 py-1" hover:bg="white op-10">
-  Press Space for next page <carbon:arrow-right />
-</div>
-
-<div class="abs-br m-6 text-xl">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="slidev-icon-btn">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" class="slidev-icon-btn">
-    <carbon:logo-github />
-  </a>
+<div class="mt-10 flex items-center gap-3 text-lg opacity-80">
+  <span class="bg-brand-stripes h-2 w-16 rounded-full" />
+  <span>How we use Mastra to build an operations-health agent</span>
 </div>
 
 <!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
+Welcome. This is a story about two design choices that have held up in production.
+Sherlog uses a sub-agent to keep high-volume log data out of the main context.
+The whole system runs on open-weight models.
 -->
 
 ---
-transition: fade-out
+layout: about-me
 ---
-
-# What is Slidev?
-
-Slidev is a slides maker and presenter designed for developers, consist of the following features
-
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
-<br>
-<br>
-
-Read more about [Why Slidev?](https://sli.dev/guide/why)
 
 <!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/features/slide-scope-style
--->
-
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
-<!--
-Here is another comment.
+I work on platform architecture at Prisma.
+This workshop is based on the Sherlog implementation and the trade-offs we made while operating it.
 -->
 
 ---
-transition: slide-up
-level: 2
+layout: section
 ---
 
-# Navigation
+# What is Sherlog?
 
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
-
-## Keyboard Shortcuts
-
-|                                                     |                             |
-| --------------------------------------------------- | --------------------------- |
-| <kbd>right</kbd> / <kbd>space</kbd>                 | next animation or slide     |
-| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd>                                       | previous slide              |
-| <kbd>down</kbd>                                     | next slide                  |
-
-<!-- https://sli.dev/guide/animations.html#click-animation -->
-<img
-  v-click
-  class="absolute -bottom-9 -left-7 w-80 opacity-50"
-  src="https://sli.dev/assets/arrow-bottom-left.svg"
-  alt=""
-/>
-<p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
-
----
-layout: two-cols
-layoutClass: gap-16
----
-
-# Table of contents
-
-You can use the `Toc` component to generate a table of contents for your slides:
-
-```html
-<Toc minDepth="1" maxDepth="1" />
-```
-
-The title will be inferred from your slide content, or you can override it with `title` and `level` in your frontmatter.
-
-::right::
-
-<Toc text-sm minDepth="1" maxDepth="2" />
+The Slack-native operations-health assistant.
 
 ---
 layout: image-right
-image: https://cover.sli.dev
+image: /sherlog.png
 ---
 
-# Code
+# Sherlog
 
-Use code snippets and get the highlighting directly, and even types hover!
+_It is a capital mistake to theorize before one has data. - Sherlock Holmes_
 
-```ts [filename-example.ts] {all|4|6|6-7|9|all} twoslash
-// TwoSlash enables TypeScript hover information
-// and errors in markdown code blocks
-// More at https://shiki.style/packages/twoslash
-import { computed, ref } from 'vue'
+Sherlock has access to all of our telemetry to assist with platform operations.
 
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
+<v-clicks>
 
-doubled.value = 2
+- **Axiom**
+  - OpenTelemetry traces
+  - Application logs
+- **ClickHouse**
+  - Application metrics
+  - ClickHouse health
+- **Ignite** (internal knowledge repo)
+  - Product context
+  - Runbooks
+  - Query examples
+
+</v-clicks>
+
+---
+
+# Slacking off
+
+Sherlog lurks in Slack until it can be helpful
+
+<div class="grid grid-cols-2 gap-4 mt-8">
+
+<div class="rounded-xl border-l-brand-stripes p-4">
+
+### Production incidents
+
+Every message in our incidents channel is visible to Sherlog.
+
+</div>
+
+<div class="rounded-xl border-l-brand-stripes p-4">
+
+### Slack DM
+
+Ask directly when you need an investigation started.
+
+</div>
+
+<div class="rounded-xl border-l-brand-stripes p-4">
+
+### @-mention
+
+Bring Sherlog into another channel when the context already lives there.
+
+</div>
+
+<div class="rounded-xl border-l-brand-stripes p-4">
+
+### Mastra Studio and API
+
+Test the agent or trigger programmatically.
+
+</div>
+
+</div>
+
+---
+
+# Triaging an incident
+
+_Eliminate all other factors, and the one which remains must be the truth._
+
+---
+
+# Generating an observability report
+
+_The world is full of obvious things which nobody by any chance ever observes._
+
+---
+
+# Investigating a support request
+
+_Come, Watson, come! The game is afoot._
+
+---
+layout: section
+---
+
+# Architecture overview
+
+---
+
+# Sherlog investigation loop
+
+```mermaid {theme: 'base', scale: 0.7}
+flowchart TB
+  T[Slack or API trigger] --> S[[Sherlog main agent<br/>reasoning model]]
+  S --> G[Grafana IRM]
+  S --> C[ClickHouse]
+  S --> I[Ignite workspace<br/>runbook search]
+  S --> A[[Axiom Query Executor<br/>data analyst model]]
+  A --> AX[Axiom<br/>queryAxiom + listAxiomDatasets]
+  S --> P[Artifact Publish]
 ```
 
-<arrow v-click="[4, 5]" x1="350" y1="310" x2="195" y2="342" color="#953" width="2" arrowSize="1" />
-
-<!-- This allow you to embed external code blocks -->
-<<< @/snippets/external.ts#snippet
-
-<!-- Footer -->
-
-[Learn more](https://sli.dev/features/line-highlighting)
-
-<!-- Inline style -->
-<style>
-.footnotes-sep {
-  @apply mt-5 opacity-10;
-}
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
-
-<!--
-Notes can also sync with clicks
-
-[click] This will be highlighted after the first click
-
-[click] Highlighted with `count = ref(0)`
-
-[click:3] Last click (skip two clicks)
--->
-
 ---
-level: 2
+layout: section
 ---
 
-# Shiki Magic Move
+# Context-heavy tasks
 
-Powered by [shiki-magic-move](https://shiki-magic-move.netlify.app/), Slidev supports animations across multiple code snippets.
+Where sub-agents become load bearing and earn their keep
 
-Add multiple code blocks and wrap them with <code>````md magic-move</code> (four backticks) to enable the magic move. For example:
+---
+layout: two-cols-header
+---
 
-````md magic-move {lines: true}
-```ts {*|2|*}
-// step 1
-const author = reactive({
-  name: 'John Doe',
-  books: [
-    'Vue 2 - Advanced Guide',
-    'Vue 3 - Basic Guide',
-    'Vue 4 - The Mystery'
-  ]
+# Mastra agents as tools for agents
+
+Optimizing context retrieval
+
+::left::
+
+### Parent sees
+
+The sub-agent’s description becomes the callable tool description.
+
+### Parent receives
+
+Only the sub-agent’s final output. Its intermediate calls and raw results stay isolated.
+
+::right::
+
+```ts {all|2-11|12-14|all}
+export const sherlog = new Agent({
+  tools: {
+    createIncident,
+    findActiveIncidents,
+    updateIncident,
+    addActivity,
+    runClickHouseQuery,
+    publishArtifact,
+    getArtifact,
+    deleteArtifact,
+  },
+  agents: {
+    axiomQueryExecutor,
+  },
 })
 ```
 
-```ts {*|1-2|3-4|3-4,8}
-// step 2
-export default {
-  data() {
-    return {
-      author: {
-        name: 'John Doe',
-        books: [
-          'Vue 2 - Advanced Guide',
-          'Vue 3 - Basic Guide',
-          'Vue 4 - The Mystery'
-        ]
-      }
-    }
-  }
-}
-```
-
-```ts
-// step 3
-export default {
-  data: () => ({
-    author: {
-      name: 'John Doe',
-      books: [
-        'Vue 2 - Advanced Guide',
-        'Vue 3 - Basic Guide',
-        'Vue 4 - The Mystery'
-      ]
-    }
-  })
-}
-```
-
-Non-code blocks are ignored.
-
-```vue
-<!-- step 4 -->
-<script setup>
-const author = {
-  name: 'John Doe',
-  books: [
-    'Vue 2 - Advanced Guide',
-    'Vue 3 - Basic Guide',
-    'Vue 4 - The Mystery'
-  ]
-}
-</script>
-```
-````
-
----
-
-# Components
-
-<div grid="~ cols-2 gap-4">
-<div>
-
-You can use Vue components directly inside your slides.
-
-We have provided a few built-in components like `<Tweet/>`, `<BlueSky/>`, and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
-
-```html
-<Counter :count="10" />
-```
-
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
-
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
-
-</div>
-<div>
-
-```html
-<Tweet id="1390115482657726468" />
-```
-
-<Tweet id="1390115482657726468" scale="0.65" />
-
-</div>
-</div>
-
 <!--
-Presenter note with **bold**, *italic*, and ~~striked~~ text.
-
-Also, HTML elements are valid:
-<div class="flex w-full">
-  <span style="flex-grow: 1;">Left content</span>
-  <span>Right content</span>
-</div>
+This is a first-class Mastra feature.
+Invoking the generated tool drives the sub-agent’s own generate loop.
 -->
 
 ---
-class: px-20
+layout: two-cols-header
 ---
 
-# Themes
+# Why Axiom needs a boundary
 
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
+Exploratory research costs context
 
-<div grid="~ cols-2 gap-2" m="t-2">
+::left::
 
-```yaml
----
-theme: default
----
-```
 
-```yaml
----
-theme: seriph
----
-```
+### Single agent
 
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true" alt="">
+<v-clicks>
 
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true" alt="">
+- Accidental unbound queries
+- Multi-iteration queries
+- Diminished aggregation quality
+- Context compaction uncertainty
 
-</div>
+</v-clicks>
 
-Read more about [How to use a theme](https://sli.dev/guide/theme-addon#use-theme) and
-check out the [Awesome Themes Gallery](https://sli.dev/resources/theme-gallery).
-
----
-
-# Clicks Animations
-
-You can add `v-click` to elements to add a click animation.
-
-<div v-click>
-
-This shows up when you press <kbd>space</kbd> or <kbd>right</kbd>, or click outside the slide on the right.
-
-```html
-<div v-click>This shows up when you trigger a click animation.</div>
-```
-
-</div>
-
-<p v-click>
-You can also add modifiers to change the animation:
-</p>
-
-<div class="grid gap-3 mt-4 text-sm" style="grid-template-columns: repeat(3, 1fr) 1.5fr 1fr">
-  <div v-after.up class="p-3 rounded border border-primary/20 bg-primary/10">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.up</div>
-    <div>Slide from bottom</div>
-  </div>
-  <div v-click.fade-in class="p-3 rounded border border-primary/30 bg-primary/15">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.fade-in</div>
-    <div>Fade in</div>
-  </div>
-  <div v-click.fade class="p-3 rounded border border-primary/40 bg-primary/20">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.fade</div>
-    <div>Dim (0.5 opacity)</div>
-  </div>
-  <div v-click.fade.right.scale class="p-3 rounded border border-primary/50 bg-primary/25">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.fade.right.scale</div>
-    <div>Composed</div>
-  </div>
-  <div v-click.none class="p-3 rounded border border-primary/60 bg-primary/30">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.none</div>
-    <div>No transition</div>
-  </div>
-</div>
+::right::
 
 <v-click>
 
-The <span v-mark.red="7"><code>v-mark</code> directive</span>
-also allows you to add
-<span v-mark.circle.orange="8">inline marks</span>
-, powered by [Rough Notation](https://roughnotation.com/):
-
-```html
-<span v-mark.underline.orange>inline markers</span>
-```
+### Sub-agent
 
 </v-click>
 
-<div v-click mt-12>
+<v-clicks>
 
-[Learn more](https://sli.dev/guide/animations#click-animation)
+- Fresh starting context
+- Clear, simple objective
+- Simple, lightweight result
+- Offload all research context
 
+</v-clicks>
+
+---
+
+# An agent on a mission
+
+<div class="grid grid-cols-3 gap-4 mt-10 text-center">
+<div class="rounded-xl border p-5"><div class="text-sm opacity-50">Sherlog</div><div class="text-xl mt-3">Form a hypothesis</div><div class="text-sm opacity-60 mt-2">Decide what to ask next</div></div>
+<div class="rounded-xl border border-brand-blue/40 p-5"><div class="text-sm opacity-50">Executor</div><div class="text-xl mt-3">Run APL query</div><div class="text-sm opacity-60 mt-2">Inspect raw rows in isolation</div></div>
+<div class="rounded-xl border p-5"><div class="text-sm opacity-50">Finding</div><div class="text-xl mt-3">Distill evidence</div><div class="text-sm opacity-60 mt-2">Return signal, not rows</div></div>
+</div>
+
+<div class="mt-8 text-center text-sm opacity-70">The executor returns: hypothesis result · summary · key metrics · affected tenants · follow-up suggestion.</div>
+
+---
+
+# When not to sub-agent
+
+The single responsibility principle was a lie
+
+<v-click>
+
+### Common mistakes:
+
+</v-click>
+
+<v-clicks>
+
+- Sub-agent for speed
+  - A sub-agent needs context and will duplicate steps
+- Sub-agent for cost
+  - Duplicative, diverging context also duplicates cache and burns more tokens
+- Sub-agent for responsibilities
+  - Doesn't help if the orchestrator can invoke the subagent with any instruction it wants
+  - Better to add deterministic tool guardrails than rely on sub-agent isolation
+
+</v-clicks>
+
+---
+
+# What we did not delegate
+
+<div class="grid grid-cols-3 gap-4 mt-10">
+<div class="rounded-xl border p-5"><h3>Runbook Locator</h3><p>Searching the workspace is cheap, and the runbook content is valuable.</p></div>
+<div class="rounded-xl border p-5"><h3>Incident Classifier</h3><p>Simple task, benefiting from expansive context.</p></div>
+<div class="rounded-xl border p-5"><h3>ClickHouse investigator</h3><p>Less exploratory. Deferred until the context actually becomes polluted.</p></div>
+</div>
+
+<div class="mt-10 text-center text-xl">A separable task is not automatically a sub-agent.</div>
+
+---
+layout: section
+---
+
+# Open-weight models in practice
+
+Behind the frontier and ahead of the curve  
+
+---
+layout: fact
+---
+
+# 100%
+
+Open-weight models across Sherlog, Gremlin, and Gizmo agents.
+
+<!--
+-->
+
+---
+
+# Route by role, not by brand
+
+Choose your fighter
+
+| **Role** | **Used by** |
+|---|---|
+| Reasoning | Sherlog, Gremlin |
+| Code review | Gizmo |
+| Data analysis | Axiom executor |
+| Summarizing | Changelog |
+| Classification | Routing tasks |
+| Structuring | Extraction passes |
+
+<div class="mt-5 text-sm opacity-60">All mappings live in one small model configuration file.</div>
+
+---
+
+# Route by role, not by brand
+
+Our model selection a few weeks ago
+
+| **Role** | **Primary → fallback** |
+|---|---|
+| Reasoning | GLM-5.2 → Kimi K3 |
+| Data analysis | MiniMax M3 → M2.7 |
+| Summarizing | MiniMax M3 → M2.7 |
+| Classification | MiniMax M3 → M2.7 |
+
+---
+
+# Route by role, not by brand
+
+Our model selection now
+
+| **Role** | **Primary → fallback** |
+|---|---|
+| Reasoning | GLM-5.3-flash → GLM-5.3 → Kimi K3 |
+| Code review | GLM-5.3-flash → GLM-5.3 |
+| Data analysis | GLM-5.3-flash → MiniMax M3 → M2.7 |
+| Summarizing | GLM-5.3-flash → MiniMax M3 → M2.7 |
+| Classification | GLM-5.3-flash → MiniMax M3 → M2.7 |
+| Structuring | GLM-5.3-flash |
+
+---
+
+# Grouping models by roles
+
+```ts
+import type { ModelWithRetries } from "@mastra/core/agent";
+
+const GLM_5P3 = "fireworks-ai/accounts/fireworks/models/glm-5p3";
+const GLM_5P3_FLASH = "fireworks-ai/accounts/fireworks/models/glm-5p3-flash";
+const KIMI_K3 = "fireworks-ai/accounts/fireworks/models/kimi-k3";
+const MINIMAX_M3 = "fireworks-ai/accounts/fireworks/models/minimax-m3";
+const MINIMAX_M2P7 = "fireworks-ai/accounts/fireworks/models/minimax-m2p7";
+
+/** Model for tasks that need strong reasoning capability and reliable tool calling. */
+export const REASONING_MODEL: ModelWithRetries[] = [
+  { model: GLM_5P3_FLASH, maxRetries: 3 },
+  { model: GLM_5P3, maxRetries: 3 },
+  { model: KIMI_K3, maxRetries: 3 },
+];
+
+/** Cheaper model for text classification and routing tasks. */
+export const CLASSIFIER_MODEL: ModelWithRetries[] = [
+  { model: GLM_5P3_FLASH, maxRetries: 3 },
+  { model: MINIMAX_M3, maxRetries: 3 },
+  { model: MINIMAX_M2P7, maxRetries: 3 },
+];
+```
+
+---
+layout: statement
+---
+
+# Summarizing text is not an Opus-class problem.
+
+Save the frontier-scale models for frontier-scale work.
+
+---
+layout: section
+---
+
+# Takeaways
+
+---
+
+# Three rules from Sherlog
+
+<div class="grid grid-cols-3 gap-5 mt-10">
+<div class="rounded-xl border border-brand-blue/40 p-5"><div class="text-4xl text-brand-blue">01</div><h3 class="mt-5">Protect context</h3><p>Add a sub-agent when raw high-volume data would otherwise flood the main agent.</p></div>
+<div class="rounded-xl border border-brand-red/40 p-5"><div class="text-4xl text-brand-red">02</div><h3 class="mt-5">Route by role</h3><p>Use a stronger model for orchestration. Use a cheaper model for focused work.</p></div>
+<div class="rounded-xl border border-brand-yellow/40 p-5"><div class="text-4xl text-brand-yellow">03</div><h3 class="mt-5">Keep it adjustable</h3><p>Put model choices in one config layer so routing can evolve without rewiring agents.</p></div>
 </div>
 
 ---
 
-# Motions
-
-Motion animations are powered by [@vueuse/motion](https://motion.vueuse.org/), triggered by `v-motion` directive.
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }"
-  :click-3="{ x: 80 }"
-  :leave="{ x: 1000 }"
->
-  Slidev
-</div>
-```
-
-<div class="w-60 relative">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-square.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-circle.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-triangle.png"
-      alt=""
-    />
-  </div>
-
-  <div
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
-}
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 30, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn more](https://sli.dev/guide/animations.html#motion)
-
-</div>
-
----
-
-# $\LaTeX$
-
-$\LaTeX$ is supported out-of-box. Powered by [$\KaTeX$](https://katex.org/).
-
-<div h-3 />
-
-Inline $\sqrt{3x-1}+(1+x)^2$
-
-Block
-$$ {1|3|all}
-\begin{aligned}
-\nabla \cdot \vec{E} &= \frac{\rho}{\varepsilon_0} \\
-\nabla \cdot \vec{B} &= 0 \\
-\nabla \times \vec{E} &= -\frac{\partial\vec{B}}{\partial t} \\
-\nabla \times \vec{B} &= \mu_0\vec{J} + \mu_0\varepsilon_0\frac{\partial\vec{E}}{\partial t}
-\end{aligned}
-$$
-
-[Learn more](https://sli.dev/features/latex)
-
----
-
-# Diagrams
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-4 gap-5 pt-4 -mb-6">
-
-```mermaid {scale: 0.5, alt: 'A simple sequence diagram'}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
-
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
-```mermaid
-mindmap
-  root((mindmap))
-    Origins
-      Long history
-      ::icon(fa fa-book)
-      Popularisation
-        British popular psychology author Tony Buzan
-    Research
-      On effectiveness<br/>and features
-      On Automatic creation
-        Uses
-            Creative techniques
-            Strategic planning
-            Argument mapping
-    Tools
-      Pen and paper
-      Mermaid
-```
-
-```plantuml {scale: 0.7}
-@startuml
-
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
-
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
-```
-
-</div>
-
-Learn more: [Mermaid Diagrams](https://sli.dev/features/mermaid) and [PlantUML Diagrams](https://sli.dev/features/plantuml)
-
----
-foo: bar
-dragPos:
-  square: 691,32,167,_,-16
----
-
-# Draggable Elements
-
-Double-click on the draggable elements to edit their positions.
-
-<br>
-
-###### Directive Usage
-
-```md
-<img v-drag="'square'" src="https://sli.dev/logo.png">
-```
-
-<br>
-
-###### Component Usage
-
-```md
-<v-drag text-3xl>
-  <div class="i-carbon:arrow-up" />
-  Use the `v-drag` component to have a draggable container!
-</v-drag>
-```
-
-<v-drag pos="663,206,261,_,-15">
-  <div text-center text-3xl border border-main rounded>
-    Double-click me!
-  </div>
-</v-drag>
-
-<img v-drag="'square'" src="https://sli.dev/logo.png">
-
-###### Draggable Arrow
-
-```md
-<v-drag-arrow two-way />
-```
-
-<v-drag-arrow pos="67,452,253,46" two-way op70 />
-
----
-src: ./pages/imported-slides.md
-hide: false
----
-
----
-
-# Monaco Editor
-
-Slidev provides built-in Monaco Editor support.
-
-Add `{monaco}` to the code block to turn it into an editor:
-
-```ts {monaco}
-import { ref } from 'vue'
-import { emptyArray } from './external'
-
-const arr = ref(emptyArray(10))
-```
-
-Use `{monaco-run}` to create an editor that can execute the code directly in the slide:
-
-```ts {monaco-run}
-import { version } from 'vue'
-import { emptyArray, sayHello } from './external'
-
-sayHello()
-console.log(`vue ${version}`)
-console.log(emptyArray<number>(10).reduce(fib => [...fib, fib.at(-1)! + fib.at(-2)!], [1, 1]))
-```
-
----
-layout: center
-class: text-center
----
-
-# Learn More
-
-[Documentation](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/resources/showcases)
-
-<PoweredBySlidev mt-10 />
+# Thank you

@@ -65,6 +65,42 @@ html.dark {
   @apply -mt-1 mb-2 opacity-70 tracking-wide;
 }
 
+/* "Collapsing the stack" layer diagram: two columns of stacked layers.
+   Built in plain HTML rather than a mermaid block-beta diagram — mermaid's
+   block-beta auto-sizing measures each label once and doesn't re-measure
+   after applying bold/class styles, so it undersizes the box and clips the
+   label text against the right edge. Colors follow the same adaptive
+   currentColor/slidev-theme-primary pattern as .two-cols-header so it
+   transitions with light/dark mode, unlike mermaid's own cards (which are
+   intentionally pinned light — see setup/mermaid.ts). */
+.stack-diagram {
+  @apply grid grid-cols-2 gap-6 mt-4;
+}
+
+.stack-diagram .stack-col {
+  /* position: relative lets this stack in the same paint step as the
+     ::before brand-stripe decoration (theme/styles/layouts.css), which is
+     absolutely positioned in the bottom-right corner. Without it, this
+     plain in-flow div paints before that positioned pseudo-element and the
+     stripe shows on top of the diagram instead of behind it. */
+  @apply relative rounded-lg shadow-lg p-4 flex flex-col gap-2.5;
+  background: color-mix(in srgb, var(--slidev-theme-primary, #04d5e7) 6%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 12px 32px -16px color-mix(in srgb, var(--brand-blue) 35%, transparent);
+}
+
+.stack-diagram .stack-title {
+  @apply text-center font-700 mb-1;
+}
+
+.stack-diagram .stack-layer {
+  @apply flex items-center justify-center text-center rounded-lg py-3 px-4;
+  flex: 1;
+  background: color-mix(in srgb, var(--slidev-theme-primary, #04d5e7) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-blue) 50%, transparent);
+}
+
 /* Give clicked-in list items a touch of motion instead of a flat fade,
    so builds feel alive without becoming a distraction. */
 .slidev-vclick-target {
@@ -94,6 +130,18 @@ html.dark {
 /* Subtle glow behind the brand stripe accent used on non-cover layouts. */
 .slidev-layout:not(.cover)::before {
   filter: drop-shadow(0 0 18px color-mix(in srgb, var(--brand-blue) 40%, transparent));
+}
+
+.slidev-layout.image-right::before {
+  content: none !important;
+  display: none !important;
+  background-image: none !important;
+}
+
+div:has(> .slidev-layout.image-right)::before {
+  content: none !important;
+  display: none !important;
+  background-image: none !important;
 }
 
 /* A large decorative quotation mark anchors the quote layout without
