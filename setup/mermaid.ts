@@ -4,6 +4,13 @@ import { defineMermaidSetup } from '@slidev/types'
 export default defineMermaidSetup((): ReturnType<MermaidSetup> => {
   return {
     theme: 'base',
+    // Node-shape rendering (mermaid's `labelHelper`) only reads this
+    // top-level flag; the nested flowchart.htmlLabels below is a
+    // deprecated alias mermaid still honors for edges/subgraphs but
+    // silently ignores here, so without this the fallback text-measuring
+    // default (`useHtmlLabels: true`) wins and clips node labels against
+    // the box mermaid sized from an earlier, narrower measurement.
+    htmlLabels: false,
     themeVariables: {
       fontFamily: 'Sora, ui-sans-serif, system-ui, sans-serif',
       fontSize: '16px',
@@ -78,11 +85,6 @@ export default defineMermaidSetup((): ReturnType<MermaidSetup> => {
     flowchart: {
       curve: 'basis',
       padding: 18,
-      // htmlLabels sizes nodes from an estimated text width that runs a
-      // few px narrower than the actual rendered Sora glyphs, clipping
-      // the last character or two. SVG text labels size nodes from the
-      // real rendered bbox instead, so they can't drift out of sync.
-      htmlLabels: false,
     },
   }
 })
