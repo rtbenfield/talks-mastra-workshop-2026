@@ -29,6 +29,12 @@ The whole system runs on open-weight models.
 -->
 
 ---
+layout: iframe
+title: Triaging an incident
+url: https://share.descript.com/embed/naiMieLKEvY
+---
+
+---
 layout: about-me
 ---
 
@@ -36,6 +42,83 @@ layout: about-me
 I work on platform architecture at Prisma.
 This workshop is based on the Sherlog implementation and the trade-offs we made while operating it.
 -->
+
+---
+layout: statement
+---
+
+<center>
+
+![Prisma](/prisma.svg)
+
+</center>
+
+Your TypeScript app from prompt to production.
+
+---
+layout: two-cols-header
+---
+
+![Prisma](/prisma.svg)
+
+::left::
+
+## Prisma Compute
+
+TypeScript application hosting running Bun
+
+## Prisma Postgres
+
+Serverless Postgres without cold starts
+
+## Prisma Storage
+
+S3 compatible storage backed by Tigris
+
+::right::
+
+<v-click>
+
+## Prisma ORM
+
+TypeScript ORM designed for agentic coding
+
+## Prisma Migrate
+
+Database migrations made easy
+
+## Prisma Studio
+
+Data exploration UI
+
+</v-click>
+
+<!--
+We've found that agents work best with a well integrated system.
+
+Prisma Cloud offers the building blocks your agent needs to build a modern full stack app under one provider.
+
+Prisma ORM, Migrate, and Studio are open source projects we offer to bring the same agent-first mindset to database development.
+-->
+
+---
+
+# Today's plan
+
+What we'll cover
+
+<v-clicks>
+
+- **What is Sherlog?**
+  - An introduction to our SRE agent
+- **Architecture overview**
+  - How Sherlog does its job
+- **Context-heavy tasks**
+  - Why we use sub-agents
+- **Open-weight models in practice**
+  - Why we use open-weight models
+
+</v-clicks>
 
 ---
 layout: section
@@ -54,7 +137,7 @@ image: /sherlog.png
 
 _It is a capital mistake to theorize before one has data. - Sherlock Holmes_
 
-Sherlock has access to all of our telemetry to assist with platform operations.
+Sherlog has access to all of our telemetry to assist with platform operations.
 
 <v-clicks>
 
@@ -64,7 +147,7 @@ Sherlock has access to all of our telemetry to assist with platform operations.
 - **ClickHouse**
   - Application metrics
   - ClickHouse health
-- **Ignite** (internal knowledge repo)
+- **Ignite** (our internal knowledge repo)
   - Product context
   - Runbooks
   - Query examples
@@ -114,24 +197,6 @@ Test the agent or trigger programmatically.
 </div>
 
 ---
-
-# Triaging an incident
-
-_Eliminate all other factors, and the one which remains must be the truth._
-
----
-
-# Generating an observability report
-
-_The world is full of obvious things which nobody by any chance ever observes._
-
----
-
-# Investigating a support request
-
-_Come, Watson, come! The game is afoot._
-
----
 layout: section
 ---
 
@@ -143,7 +208,7 @@ layout: section
 
 ```mermaid {theme: 'base', scale: 0.7}
 flowchart TB
-  T[Slack or API trigger] --> S[[Sherlog main agent<br/>reasoning model]]
+  T[Slack or API trigger] --> S[[Sherlog agent]]
   S --> G[Grafana IRM]
   S --> C[ClickHouse]
   S --> I[Ignite workspace<br/>runbook search]
@@ -151,6 +216,18 @@ flowchart TB
   A --> AX[Axiom<br/>queryAxiom + listAxiomDatasets]
   S --> P[Artifact Publish]
 ```
+
+<!--
+
+Sherlog can:
+- Create and update incidents in Grafana IRM
+  - Useful for tracking Sherlog's research
+- Query ClickHouse
+- Access our knowledge base (Ignite)
+- Dispatch queries to a sub-agent
+- Publish artifacts (any text content)
+
+-->
 
 ---
 layout: section
@@ -275,6 +352,9 @@ The single responsibility principle was a lie
 - Sub-agent for responsibilities
   - Doesn't help if the orchestrator can invoke the subagent with any instruction it wants
   - Better to add deterministic tool guardrails than rely on sub-agent isolation
+- Sub-agents for workflow orchestration
+  - Mastra workflows are failure resilient
+  - Workflow steps can be deterministic functions or agent executions
 
 </v-clicks>
 
@@ -354,11 +434,15 @@ Our model selection now
 | Classification | GLM-5.3-flash → MiniMax M3 → M2.7 |
 | Structuring | GLM-5.3-flash |
 
+<!--
+GLM-5.3-flash has a great balance of capability, speed, and cost.
+-->
+
 ---
 
 # Grouping models by roles
 
-```ts
+```ts {all|3-7|9-14|16-21}
 import type { ModelWithRetries } from "@mastra/core/agent";
 
 const GLM_5P3 = "fireworks-ai/accounts/fireworks/models/glm-5p3";
@@ -386,7 +470,7 @@ export const CLASSIFIER_MODEL: ModelWithRetries[] = [
 layout: statement
 ---
 
-# Summarizing text is not an Opus-class problem.
+# Summarizing text is not a Fable-class problem.
 
 Save the frontier-scale models for frontier-scale work.
 
@@ -405,6 +489,14 @@ layout: section
 <div class="rounded-xl border border-brand-red/40 p-5"><div class="text-4xl text-brand-red">02</div><h3 class="mt-5">Route by role</h3><p>Use a stronger model for orchestration. Use a cheaper model for focused work.</p></div>
 <div class="rounded-xl border border-brand-yellow/40 p-5"><div class="text-4xl text-brand-yellow">03</div><h3 class="mt-5">Keep it adjustable</h3><p>Put model choices in one config layer so routing can evolve without rewiring agents.</p></div>
 </div>
+
+<!--
+Use sub-agents when the context is isolated from the parent/siblings and disposable.
+
+Think about models by role, then swapping roles becomes trivial.
+
+Configure models by role in one place for easy editing.
+-->
 
 ---
 
