@@ -54,17 +54,19 @@ layout: statement
 
 <center>
 
-![Prisma](/prisma.svg)
+<img src="/prisma.svg" width="264" height="67" />
 
 </center>
 
 Your TypeScript app from prompt to production.
 
+## prisma.io
+
 ---
 layout: two-cols-header
 ---
 
-![Prisma](/prisma.svg)
+<img src="/prisma.svg" width="264" height="67" />
 
 ::left::
 
