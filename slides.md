@@ -36,7 +36,7 @@ The whole system runs on open-weight models.
 ---
 layout: iframe
 title: Triaging an incident
-url: https://share.descript.com/embed/naiMieLKEvY
+url: https://share.descript.com/embed/XdUJfqTPAZM
 ---
 
 ---
