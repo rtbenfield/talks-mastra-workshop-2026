@@ -14,7 +14,7 @@
     font-family: var(--font-heading);
   }
 
-  &:not(.cover)::before {
+  &:not(.cover):not(.image)::before {
     @apply bg-brand-stripes-v;
     content: '';
     position: absolute;

@@ -9,6 +9,11 @@ transition: slide-left
 duration: 30min
 comark: true
 
+layout: image
+image: /thumbnail.png
+---
+
+---
 layout: cover
 # background: ./theme/public/texture.jpg
 ---
